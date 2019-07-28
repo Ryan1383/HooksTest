@@ -19,7 +19,7 @@ const User = React.memo(function User({user,onRemove,onToggle}){
     )
 })
 
-function UserList({users,onRemove,onToggle} ){
+function UserList({users, onRemove, onToggle} ){
    
 
     return(
