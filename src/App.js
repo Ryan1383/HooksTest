@@ -2,7 +2,13 @@ import React ,{useRef,useReducer, useMemo, useCallback} from 'react';
 import './App.css';
 import UserList from './UserList';
 import CreateUser from './CreateUser';
+import useInputs from './useInputs';
 
+/**
+ * Reducer는 상태를 업데이트 하는 함수
+ * -- dispatch : 액션을 발생시킨다.
+ * -- 
+ */
 
 function countActiveUsers(users){
   console.log('활성 사용자 수 세는중 ...');
@@ -12,47 +18,33 @@ function countActiveUsers(users){
 
 
 const initialState = {
-            inputs:{
-              username:'',
-              email:'',
+          users:[
+            {
+                id: 1,
+                username: 'In',
+                email: 'chaosmos1383@gmail.com',
+                active: true
             },
+            {
+                id: 2,
+                username: 'Eunmi',
+                email: 'eunmi6564@gmail.com',
+                active: false
 
-            users:[
-              {
-                  id: 1,
-                  username: 'In',
-                  email: 'chaosmos1383@gmail.com',
-                  active: true
-              },
-              {
-                  id: 2,
-                  username: 'Eunmi',
-                  email: 'eunmi6564@gmail.com',
-                  active: false
+            },
+            {
+                id: 3,
+                username: 'eunIn',
+                email: 'Eunin@gmail.com',
+                active: false
 
-              },
-              {
-                  id: 3,
-                  username: 'eunIn',
-                  email: 'Eunin@gmail.com',
-                  active: false
-
-              },
-            
-            ]
+            },
+          
+          ]
 }
 
 function reducer(state, action) {
   switch(action.type){
-    case 'CHANGE_INPUT':
-      return {
-        ...state,
-        inputs:{
-          ...state.inputs,
-          [action.name] : action.value
-        }   
-      }
-
      case 'CREATE_USER':
        return { 
          users : state.users.concat(action.user)
@@ -84,19 +76,14 @@ function App() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const nextId = useRef(4);
-
+  const [ form, onChange, reset ] = useInputs({
+    username: '',
+    email: '',
+  })
   const {users} = state;
-  const {username, email} = state.inputs;
+  const {username, email} = form;
 
-  const onChange = useCallback( e =>{
-  const {name, value} = e.target;
-  
-  dispatch({
-      type:'CHANGE_INPUT',
-      name,
-      value
-    })
-  }, []);
+
 
   const onCreate = useCallback(() =>{
     dispatch({
@@ -109,8 +96,8 @@ function App() {
       });
 
       nextId.current += 1;
-
-    }, [username, email]);
+      reset();
+    }, [username, email, reset]);
 
 
   const onToggle = useCallback( (id) =>{
